@@ -1,6 +1,6 @@
 const router = require("express").Router()
 //bring in auth.js reg function
-const {userRegister} = require("../utils/Auth"); 
+const {userRegister, userLogin,} = require("../utils/Auth"); 
 
 
 //user reg route
@@ -18,18 +18,26 @@ router.post("/register-super-admin",async (req,res)=>{
     await userRegister(req.body, "superadmin", res);
 });
 
-//user login route
-router.post("/login-user",async (req,res)=>{});
-
-//admin login route
-router.post("/login-admin",async (req,res)=>{});
-
-
-//super admin login route
-router.post("/login-super-admin",async (req,res)=>{});
+// Users Login Route
+router.post("/login-user", async (req, res) => {
+    await userLogin(req.body, "user", res);
+  });
+  
+  // Admin Login Route
+  router.post("/login-admin", async (req, res) => {
+    await userLogin(req.body, "admin", res);
+  });
+  
+  // Super Admin Login Route
+  router.post("/login-super-admin", async (req, res) => {
+    await userLogin(req.body, "superadmin", res);
+  });
+  
 
 //profile route 
-router.get('profile', async(req, res) => {});
+router.get('/profile', async(req, res) => {
+    console.log(req.user)
+});
 
 
 //user protected route
