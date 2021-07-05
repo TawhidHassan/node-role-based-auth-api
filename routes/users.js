@@ -1,6 +1,6 @@
 const router = require("express").Router()
 //bring in auth.js reg function
-const {userRegister, userLogin,} = require("../utils/Auth"); 
+const {userRegister, userLogin,userAuth,checkRole,serializeUser} = require("../utils/Auth"); 
 
 
 //user reg route
@@ -35,18 +35,41 @@ router.post("/login-user", async (req, res) => {
   
 
 //profile route 
-router.get('/profile', async(req, res) => {
-    console.log(req.user)
-});
+router.get("/profile", userAuth, async (req, res) => {
+    return res.json(serializeUser(req.user));
+  });
+  
 
 
-//user protected route
-router.post("/user-protedted",async (req,res)=>{});
+// Users Protected Route
+router.get("/user-protectd",userAuth,checkRole(["user"]),
+    async (req, res) => {
+      return res.json("Hello User");
+    }
+  );
+  
+  // Admin Protected Route
+  router.get("/admin-protectd",userAuth,checkRole(["admin"]),
+    async (req, res) => {
+      return res.json("Hello Admin");
+    }
+  );
+  
+  // Super Admin Protected Route
+  router.get("/super-admin-protectd",userAuth,checkRole(["superadmin"]),
+    async (req, res) => {
+      return res.json("Hello Super Admin");
+    }
+  );
 
-//admin protected route
-router.post("/admin-protedted",async (req,res)=>{});
-
-//super admin protected route
-router.post("/super-admin-protedted",async (req,res)=>{});
+// Super Admin Protected Route
+router.get(
+    "/super-admin-and-admin-protectd",
+    userAuth,
+    checkRole(["superadmin", "admin"]),
+    async (req, res) => {
+      return res.json("Super admin and Admin");
+    }
+  );
 
 module.exports = router;

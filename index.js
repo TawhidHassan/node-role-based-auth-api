@@ -14,6 +14,9 @@ const app = exp();
 // Middlewares
 app.use(cors());
 app.use(bp.json());
+app.use(passport.initialize());
+
+require("./middlewares/passport")(passport);
 
 // User Router Middleware
 app.use("/api/users", require("./routes/users"));

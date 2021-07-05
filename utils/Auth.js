@@ -110,8 +110,19 @@ try{
     }
   };
   
-  
 
+  /**
+ * @DESC Passport middleware
+ */
+const userAuth = passport.authenticate("jwt", { session: false });
+  
+/**
+ * @DESC Check Role Middleware
+ */
+ const checkRole = roles => (req, res, next) =>
+ !roles.includes(req.user.role)
+   ? res.status(401).json("Unauthorized")
+   : next();
 
 
 //check user exit or not with name
@@ -126,5 +137,15 @@ try{
     return user ? false : true;
   };
 
+  const serializeUser = user => {
+    return {
+      username: user.username,
+      email: user.email,
+      name: user.name,
+      _id: user._id,
+      updatedAt: user.updatedAt,
+      createdAt: user.createdAt
+    };
+  };
 
-  module.exports = { userRegister,userLogin};
+  module.exports = { userRegister,userLogin,userAuth,checkRole,serializeUser};
